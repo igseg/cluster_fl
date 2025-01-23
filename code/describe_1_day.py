@@ -3,29 +3,82 @@ import numpy as np
 from datetime import datetime
 from time import time
 
+tardis_timestamp_to_dt = lambda x:  datetime.fromtimestamp(x/1e6)
+
+def tardis_times_to_dt(df, column):
+    df[column] = df[column].apply(tardis_timestamp_to_dt)
+    return df
+
+def filter_add_ttm(df, ttm_name='ttm', time_name='timestamp', maturity_name='expiration'):
+    """
+    adds time to maturity
+    Times must be as datetime objects
+    """
+    df[ttm_name] = df[maturity_name] - df[time_name]
+    return df
+
+def filter_0dte(df, ttm_name='ttm'):
+    """
+    Times must be as datetime objects
+    """
+    filter = data_tardis[ttm_name].apply(lambda x:x.days < 1)
+    return data_tardis[filter], data_tardis[~filter]
+
+def filter_split_call_put(df, col_name='type', call_name='call', put_name='put'):
+    return df[df[col_name]==call_name], df[df[col_name]==put_name]
+
+def filter_2stds_dfcol(df, col_name):
+    mean = df[col_name].mean()
+    std = df[col_name].std()
+    up_limit = mean + 2 * std
+    low_limit = mean - 2 * std
+
+    condition = np.logical_and(df[col_name] < up_limit, df[col_name] < low_limit)
+    return df[condition]
+
+# Load Data
+
 t0 = time()
 
 path_data = '~/scratch/'
 name_tardis = 'deribit_options_chain_2023-07-04_OPTIONS.csv.gz'
 folder = '../data/'
 
-tardis_timestamp_to_dt = lambda x:  datetime.fromtimestamp(x/1e6)
-
 data_tardis = pd.read_csv(path_data + name_tardis)
 
-print(f'Time loading data: {(time()- t0)/60:.2f} minutes')
+t_load = time()
+print(f'Time loading data: {(t_load - t0)/60:.2f} minutes')
 
-data_tardis['timestamp'] = data_tardis['timestamp'].apply(tardis_timestamp_to_dt)
-data_tardis['expiration'] = data_tardis['expiration'].apply(tardis_timestamp_to_dt)
+# Filters
 
-data_tardis['ttm'] = data_tardis['expiration'] - data_tardis['timestamp']
-condition = data_tardis['ttm'].apply(lambda x:x.days < 1)
+data_tardis = tardis_times_to_dt(data_tardis, 'timestamp')
+data_tardis = tardis_times_to_dt(data_tardis, 'expiration')
+data_tardis = filter_add_ttm(data_tardis)
+df_0dte, _  = filter_0dte(data_tardis)
+df_0dte_calls, df_0dte_puts = filter_split_call_put(df_0dte)
+df_0dte_calls_delta_2_std = filter_2stds_dfcol(df=df_0dte_calls,
+                                                col_name='delta')
+df_0dte_puts_delta_2_std = filter_2stds_dfcol(df=df_0dte_puts,
+                                                col_name='delta')
 
-print(f'Time loading and proecssing data: {(time()- t0)/60:.2f} minutes')
+t_filter = time()
+print(f'Time filtering data: {(t_filter-t_load)/60:.2f} minutes')
 
-data_tardis[~condition].describe().to_csv(folder + 'descriptives_long.csv')
-data_tardis[condition].describe().to_csv(folder + 'descriptives_short.csv')
+# Save results
 
-data_tardis[condition].to_csv(path_data + 'processed_data.csv.gz')
+name1 = 'df_0dte_calls'
+name2 = 'df_0dte_puts'
+name3 = 'df_0dte_calls_delta_2_std'
+name4 = 'df_0dte_puts_delta_2_std'
+
+df_0dte_calls.describe().to_csv(folder + name1)
+df_0dte_puts.describe().to_csv(folder + name2)
+df_0dte_calls_delta_2_std.describe().to_csv(folder + name3)
+df_0dte_puts_delta_2_std.describe().to_csv(folder + name4)
+
+# data_tardis[~condition].describe().to_csv(folder + 'descriptives_long.csv')
+# data_tardis[condition].describe().to_csv(folder + 'descriptives_short.csv')
+
+# data_tardis[condition].to_csv(path_data + 'processed_data.csv.gz')
 
 print(f'Total running time: {(time()- t0)/60:.2f} minutes')
