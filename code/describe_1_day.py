@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from time import time
+
+t0 = time()
 
 path_data = '~/scratch/'
 name_tardis = 'deribit_options_chain_2023-07-04_OPTIONS.csv.gz'
@@ -16,8 +19,9 @@ data_tardis['expiration'] = data_tardis['expiration'].apply(tardis_timestamp_to_
 data_tardis['ttm'] = data_tardis['expiration'] - data_tardis['timestamp']
 condition = data_tardis['ttm'].apply(lambda x:x.days < 1)
 
-print(data_tardis[~condition].describe())
-print('='*200)
-print(data_tardis[condition].describe())
+data_tardis[~condition].describe().to_csv(folder + 'descriptives_long.csv')
+data_tardis[condition].describe().to_csv(folder + 'descriptives_short.csv')
 
 data_tardis[condition].to_csv(path_data + 'processed_data.csv.gz')
+
+print(f'{(time()- t0)/60} minutes')
