@@ -36,6 +36,29 @@ def filter_2stds_dfcol(df, col_name):
     condition = np.logical_and(df[col_name] < up_limit, df[col_name] < low_limit)
     return df[condition]
 
+def load_tardis_data(file):
+    header = pd.read_csv(file, nrows=0)
+    column_names = header.columns.tolist()
+    n_cols = len(column_names)
+    columns_to_read = column_names[1:]
+
+    dtype = {}
+    for i in range(2,len(column_names)):
+        name = column_names[i]
+        if name in ['symbol', 'type', 'underlying_index']:
+            dtype[name] = 'string'
+        elif name in ['timestamp', 'local_timestamp']:
+            dtype[name] = 'int64'
+        elif name in ['expiration']:
+            continue
+        else:
+            dtype[name] = 'float32'
+    data_tardis = pd.read_csv(file,
+                          usecols=columns_to_read,
+                          dtype=dtype
+                         )
+    return data_tardis
+
 # Load Data
 
 t0 = time()
@@ -44,7 +67,8 @@ path_data = '~/scratch/'
 name_tardis = 'deribit_options_chain_2023-07-04_OPTIONS.csv.gz'
 folder = '../data/'
 
-data_tardis = pd.read_csv(path_data + name_tardis)
+# data_tardis = pd.read_csv(path_data + name_tardis)
+data_tardis = load_tardis_data(path_data + name_tardis)
 
 t_load = time()
 print(f'Time loading data: {(t_load - t0)/60:.2f} minutes')
