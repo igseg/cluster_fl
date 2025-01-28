@@ -40,13 +40,13 @@ def load_tardis_data(file):
     header = pd.read_csv(file, nrows=0)
     column_names = header.columns.tolist()
     n_cols = len(column_names)
-    columns_to_read = column_names[1:]
+    columns_to_read = column_names[2:]
 
     dtype = {}
     for i in range(2,len(column_names)):
         name = column_names[i]
         if name in ['symbol', 'type', 'underlying_index']:
-            dtype[name] = 'string'
+            dtype[name] = 'category'
         elif name in ['timestamp', 'local_timestamp']:
             dtype[name] = 'int64'
         elif name in ['expiration']:
