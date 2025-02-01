@@ -17,12 +17,13 @@ def filter_add_ttm(df, ttm_name='ttm', time_name='timestamp', maturity_name='exp
     df[ttm_name] = df[maturity_name] - df[time_name]
     return df
 
-def filter_0dte(df, ttm_name='ttm'):
+def filter_0dte(df, ttm_name='ttm', days_to_maturity=1):
     """
     Times must be as datetime objects
     """
-    filter = data_tardis[ttm_name].apply(lambda x:x.days < 1)
-    return data_tardis[filter], data_tardis[~filter]
+    fil = df[ttm_name].apply(lambda x:x.days < days_to_maturity)
+    return df[fil], df[~fil]
+    
 
 def filter_split_call_put(df, col_name='type', call_name='call', put_name='put'):
     return df[df[col_name]==call_name], df[df[col_name]==put_name]
