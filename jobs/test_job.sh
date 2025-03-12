@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=0:15:0    
@@ -10,4 +10,4 @@ cd ../code/
 module load python/3.12 scipy-stack
 source ~/env_fl/bin/activate
 
-python describe_1_day.py
+python preprocessing.py

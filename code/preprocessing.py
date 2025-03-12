@@ -3,7 +3,7 @@ import numpy as np
 from datetime import datetime
 from time import time
 from tools import *
-
+from glob import glob
 
 columns_to_read = ['symbol',
  'timestamp',
