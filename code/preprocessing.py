@@ -56,7 +56,7 @@ def process_file(file, columns_to_read, dtype):
                               usecols=columns_to_read,
                               dtype=dtype,
                              )
-    
+
     data_tardis = filter_coin_tardis(data_tardis)
     data_tardis = data_tardis.dropna(subset=["last_price"])
     data_tardis = tardis_times_to_dt(data_tardis, 'timestamp')
@@ -74,22 +74,24 @@ if __name__ == '__main__':
     path = '/home/igseta/scratch/full_tardis_data/'
     files = glob(path + '*')
     save_path = '/home/igseta/scratch/preprocessed_data/'
-    save_name = ['df_0dte_calls_windowed.csv', 'df_0dte_puts_windowed.csv']
+    save_name = ['df_0dte_calls_windowed', 'df_0dte_puts_windowed']
     first_iteration = True
     for i, file in enumerate(files):
         df_0dte_calls_tmp, df_0dte_puts_tmp = process_file(file, columns_to_read, dtype)
-
-        if first_iteration:
-            first_iteration = False
-            df_0dte_calls = df_0dte_calls_tmp
-            df_0dte_puts = df_0dte_puts_tmp
-        else:
-            df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
-            df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
-        if i == 10:
-            break
+        print(file)
+        df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{i}.csv", index=False)
+        df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{i}.csv", index=False)
+        # if first_iteration:
+        #     first_iteration = False
+        #     df_0dte_calls = df_0dte_calls_tmp
+        #     df_0dte_puts = df_0dte_puts_tmp
+        # else:
+        #     df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
+        #     df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
+        # if i == 10:
+        #     break
 
     ## save results
-    df_0dte_calls.to_csv(save_path + save_name[0], index=False)
-    df_0dte_puts.to_csv(save_path + save_name[1], index=False)
+    # df_0dte_calls.to_csv(save_path + save_name[0], index=False)
+    # df_0dte_puts.to_csv(save_path + save_name[1], index=False)
     print(f'Total running time: {(time()- t0)/60:.2f} minutes')
