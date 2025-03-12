@@ -73,7 +73,7 @@ if __name__ == '__main__':
     t0 = time()
     path = '/home/igseta/scratch/full_tardis_data/'
     files = glob(path + '*')
-        save_path = '/home/igseta/scratch/preprocessed_data/'
+    save_path = '/home/igseta/scratch/preprocessed_data/'
     save_name = ['df_0dte_calls_windowed.csv', 'df_0dte_puts_windowed.csv']
     first_iteration = True
     for i, file in enumerate(files):
