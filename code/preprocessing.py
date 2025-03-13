@@ -60,7 +60,7 @@ def tardis_times_to_dt(df, column):
 def process_file(file, columns_to_read, dtype):
     data_tardis = pd.read_csv(file,
                               usecols=columns_to_read,
-                              dtype=dtype, nrows=int(1e6)
+                              dtype=dtype
                              )
 
     data_tardis = filter_coin_tardis(data_tardis)
