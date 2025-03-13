@@ -51,10 +51,15 @@ dtype={'timestamp': 'int64',
  'theta': 'float32',
  'rho': 'float32'}
 
+tardis_timestamp_to_dt = lambda x:  datetime.fromtimestamp(x/1e6)
+def tardis_times_to_dt(df, column):
+    df[column] = df[column].apply(tardis_timestamp_to_dt)
+    return df
+
 def process_file(file, columns_to_read, dtype):
     data_tardis = pd.read_csv(file,
                               usecols=columns_to_read,
-                              dtype=dtype,
+                              dtype=dtype, nrows=int(1e6)
                              )
 
     data_tardis = filter_coin_tardis(data_tardis)
@@ -76,20 +81,23 @@ if __name__ == '__main__':
     save_path = '/home/igseta/scratch/preprocessed_data/'
     save_name = ['df_0dte_calls_windowed', 'df_0dte_puts_windowed']
     first_iteration = True
+    # files = ['../../deribit_options_chain_2023-07-04_OPTIONS.csv']
     for i, file in enumerate(files):
         df_0dte_calls_tmp, df_0dte_puts_tmp = process_file(file, columns_to_read, dtype)
         print(file)
         df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{i}.csv", index=False)
+        # df_0dte_calls_tmp.to_csv('./' + save_name[0] + f"_{i}.csv", index=False)
         df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{i}.csv", index=False)
-        # if first_iteration:
-        #     first_iteration = False
-        #     df_0dte_calls = df_0dte_calls_tmp
-        #     df_0dte_puts = df_0dte_puts_tmp
-        # else:
-        #     df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
-        #     df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
-        # if i == 10:
-        #     break
+        # df_0dte_puts_tmp.to_csv('./' + save_name[1] + f"_{i}.csv", index=False)
+        if first_iteration:
+            first_iteration = False
+            df_0dte_calls = df_0dte_calls_tmp
+            df_0dte_puts = df_0dte_puts_tmp
+        else:
+            df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
+            df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
+        if i == 10:
+            break
 
     ## save results
     # df_0dte_calls.to_csv(save_path + save_name[0], index=False)
