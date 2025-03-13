@@ -91,15 +91,14 @@ if __name__ == '__main__':
         # df_0dte_calls_tmp.to_csv('./' + save_name[0] + f"_{i}.csv", index=False)
         df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{i}.csv", index=False)
         # df_0dte_puts_tmp.to_csv('./' + save_name[1] + f"_{i}.csv", index=False)
-        if first_iteration:
-            first_iteration = False
-            df_0dte_calls = df_0dte_calls_tmp
-            df_0dte_puts = df_0dte_puts_tmp
-        else:
-            df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
-            df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
-        if i == 10:
-            break
+        # if first_iteration:
+        #     first_iteration = False
+        #     df_0dte_calls = df_0dte_calls_tmp
+        #     df_0dte_puts = df_0dte_puts_tmp
+        # else:
+        #     df_0dte_calls = pd.concat([df_0dte_calls, df_0dte_calls_tmp])
+        #     df_0dte_puts = pd.concat([df_0dte_puts, df_0dte_puts_tmp])
+
 
     ## save results
     # df_0dte_calls.to_csv(save_path + save_name[0], index=False)
