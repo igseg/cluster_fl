@@ -85,8 +85,11 @@ if __name__ == '__main__':
     first_iteration = True
     # files = ['../../deribit_options_chain_2023-07-04_OPTIONS.csv']
     for i, file in enumerate(files):
-        df_0dte_calls_tmp, df_0dte_puts_tmp = process_file(file, columns_to_read, dtype)
-        print(file)
+        try:
+            df_0dte_calls_tmp, df_0dte_puts_tmp = process_file(file, columns_to_read, dtype)
+        except TypeError:
+            print(file)
+            continue
         df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{i}.csv", index=False)
         # df_0dte_calls_tmp.to_csv('./' + save_name[0] + f"_{i}.csv", index=False)
         df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{i}.csv", index=False)
