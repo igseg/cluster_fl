@@ -64,14 +64,14 @@ def process_file(file, columns_to_read, dtype):
                              )
 
     data_tardis = filter_coin_tardis(data_tardis)
-    data_tardis = data_tardis.dropna(subset=["last_price"])
+    # data_tardis = data_tardis.dropna(subset=["last_price"])
     data_tardis = tardis_times_to_dt(data_tardis, 'timestamp')
     data_tardis = tardis_times_to_dt(data_tardis, 'expiration')
     data_tardis = filter_add_ttm(data_tardis)
     df_0dte, _  = filter_0dte(data_tardis)
     df_0dte_calls, df_0dte_puts = filter_split_call_put(df_0dte)
-    df_0dte_calls = df_window(df_0dte_calls)
-    df_0dte_puts = df_window(df_0dte_puts)
+    # df_0dte_calls = df_window(df_0dte_calls)
+    # df_0dte_puts = df_window(df_0dte_puts)
 
     return df_0dte_calls, df_0dte_puts
 
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     files = glob(path + '*')
     files = sorted(files, key=lambda x: re.search(r'(\d{4}-\d{2}-\d{2})', x).group())
     save_path = '/home/igseta/scratch/preprocessed_data/'
-    save_name = ['df_0dte_calls_windowed', 'df_0dte_puts_windowed']
+    save_name = ['df_0dte_calls', 'df_0dte_puts']
     first_iteration = True
     # files = ['../../deribit_options_chain_2023-07-04_OPTIONS.csv']
     for i, file in enumerate(files):
@@ -90,9 +90,10 @@ if __name__ == '__main__':
         except TypeError:
             print(file)
             continue
-        df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{i}.csv", index=False)
+        name = str(i).zfill(4)
+        df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{name}.csv", index=False)
         # df_0dte_calls_tmp.to_csv('./' + save_name[0] + f"_{i}.csv", index=False)
-        df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{i}.csv", index=False)
+        df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{name}.csv", index=False)
         # df_0dte_puts_tmp.to_csv('./' + save_name[1] + f"_{i}.csv", index=False)
         # if first_iteration:
         #     first_iteration = False
