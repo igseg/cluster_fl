@@ -91,9 +91,9 @@ if __name__ == '__main__':
             print(file)
             continue
         name = str(i).zfill(4)
-        df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{name}.csv", index=False)
+        df_0dte_calls_tmp.to_csv(save_path + save_name[0] + f"_{name}.csv.gz", index=False, compression='gzip')
         # df_0dte_calls_tmp.to_csv('./' + save_name[0] + f"_{i}.csv", index=False)
-        df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{name}.csv", index=False)
+        df_0dte_puts_tmp.to_csv(save_path + save_name[1] + f"_{name}.csv.gz", index=False, compression='gzip')
         # df_0dte_puts_tmp.to_csv('./' + save_name[1] + f"_{i}.csv", index=False)
         # if first_iteration:
         #     first_iteration = False
