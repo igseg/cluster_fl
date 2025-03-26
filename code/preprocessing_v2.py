@@ -77,7 +77,7 @@ def process_file(file, columns_to_read, dtype):
 
 t0 = time()
 path = '/home/igseta/scratch/full_tardis_data/'
-save_path = '/home/igseta/scratch/preprocessed_data/'
+save_path = '/home/igseta/scratch/preprocessed_data_v2/'
 # path = '/media/ignacio/TOSHIBA EXT/data/Tardis/'
 # save_path = '/media/ignacio/3b28df90-2e02-4c09-b580-8da764c01346/data/'
 save_name = ['df_0dte_calls', 'df_0dte_puts']
@@ -93,7 +93,7 @@ for i, file in enumerate(files):
     i = T - i
     chunks = pd.read_csv(file, usecols=columns_to_read, dtype=dtype, chunksize=chunksize)
     first_iteration = True
-    if i < 35 or i >= 1798:
+    if i < 35 or i >= 1784:
         continue
     for chunk in chunks:
 
