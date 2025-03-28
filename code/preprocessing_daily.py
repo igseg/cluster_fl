@@ -48,11 +48,19 @@ files = files[::-1]
 T = len(files)
 
 for i, file in enumerate(files):
-    df = pd.read_csv(file, usecols=columns_to_read, dtype=dtype)
+    df = pd.read_csv(file, usecols=['timestamp', 'symbol']).reset_index()
     df = df[df.symbol.apply(lambda x: 'BTC' in x)]
     df = df.sort_values('timestamp')
-    df.timestamp = pd.to_datetime(df.timestamp, unit='us')
     df = df.groupby('symbol').last()
+    df = df.sort_values('timestamp')
 
+    y = df['index'].values + 1
+    df_2 = pd.read_csv(file, skiprows = lambda x: x not in y and x > 0)
+    df_2 = df_2.sort_values('timestamp')
+
+    if (df_2.timestamp.values == df.timestamp.values).sum() != len(df):
+        print(f'file {file} may be compromised.')
+
+    i = T - i
     name = str(i).zfill(4)
-    df.to_csv(save_path + 'df_daily' + f"_{name}.csv.gz", index=False, compression='gzip')
+    df_2.to_csv(save_path + 'df_daily' + f"_{name}.csv.gz", index=False, compression='gzip')
