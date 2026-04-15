@@ -40,14 +40,19 @@ dtype={'timestamp': 'int64',
  'underlying_index': 'category',
  'underlying_price': 'float32'}
 
-path = '/home/igseta/scratch/full_tardis_data/'
-save_path = '/home/igseta/scratch/preprocessed_data_daily/'
+# path = '/home/igseta/scratch/full_tardis_data/'
+# save_path = '/home/igseta/scratch/preprocessed_data_daily/'
+
+path = '/media/ignacio/TOSHIBA EXT/data/Tardis/'
+save_path = '/media/ignacio/3b28df90-2e02-4c09-b580-8da764c01346/data/daily_laptop/'
 files = glob(path + '*')
 files = sorted(files, key=lambda x: re.search(r'(\d{4}-\d{2}-\d{2})', x).group())
 files = files[::-1]
 T = len(files)
 
 for i, file in enumerate(files):
+    if i < 2:
+        continue
     df = pd.read_csv(file, usecols=['timestamp', 'symbol']).reset_index()
     df = df[df.symbol.apply(lambda x: 'BTC' in x)]
     df = df.sort_values('timestamp')
@@ -64,3 +69,4 @@ for i, file in enumerate(files):
     i = T - i
     name = str(i).zfill(4)
     df_2.to_csv(save_path + 'df_daily' + f"_{name}.csv.gz", index=False, compression='gzip')
+    print(file)

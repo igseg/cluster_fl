@@ -93,7 +93,7 @@ for i, file in enumerate(files):
     i = T - i
     chunks = pd.read_csv(file, usecols=columns_to_read, dtype=dtype, chunksize=chunksize)
     first_iteration = True
-    if i < 35 or i >= 1784:
+    if i < 35:
         continue
     for chunk in chunks:
 

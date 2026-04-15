@@ -14,6 +14,12 @@ do
   start_read=$((jump*22))  # Update start before entering the second loop
   echo "$((jump))"
   echo "$jump" > "$start_file"
+  make; spd-say check
+  read -p "Do you want to continue? (y/n): " choice
+  if [[ "$choice" != "y" ]]; then
+      echo "Exiting..."
+      break
+  fi
   read_files=("${files[@]:start_read:22}")  # Corrected slicing syntax
   # echo "${read_files[@]}"  # Print selected files
   scp -r "${read_files[@]}" igseta@cedar.computecanada.ca:scratch/full_tardis_data/
@@ -23,4 +29,6 @@ do
   #   # echo ${files[num]}  # Uncomment if 'files' is defined
   #   echo "$((start+num))"
   # done
+
+
 done
