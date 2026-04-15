@@ -10,6 +10,7 @@ from generalized_tools import (COS_method_call_general,
 from tools import get_best_estimates, implied_volatility
 from scipy.optimize import minimize
 import sys
+import os
 
 def _extract_arrays(df):
     return (
@@ -103,6 +104,8 @@ def training_1_step(model_name, window, start, batch_size):
     pad = int(np.log10(T)) + 1
 
     path_estimates, path_parameter = path_generating(model_name)
+    os.makedirs(path_estimates, exist_ok=True)
+    os.makedirs(path_parameter, exist_ok=True)
     optimizer_setting = setting_generating(model_name)
 
     ## Define the meshgrid of starting points
