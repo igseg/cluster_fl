@@ -214,8 +214,8 @@ if __name__ == '__main__':
     ## Assign model
 
     # model_name = 'heston_1_step'
-    # model_name = 'gaussian_jumps_1'
-    model_name = 'variance_gamma_1'
+    model_name = 'gaussian_jumps_1'
+    # model_name = 'variance_gamma_1'
     # model_name = 'cgmy_1'
     # model_name = 'cgmy_sv_1'
     # model_name = 'cgmy4_sv_1'
