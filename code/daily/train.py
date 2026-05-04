@@ -164,6 +164,9 @@ def training_1_step(model_name, window, start, batch_size):
 
         tmp_df = add_iv_estimated(best_state, tmp_df, r, N, model_name)
 
+        os.makedirs(path_estimates, exist_ok=True)
+        os.makedirs(path_parameter, exist_ok=True)
+
         file_estimates = path_estimates + model_name + str(i).zfill(pad) + '.csv'
         file_parameter = path_parameter + model_name + str(i).zfill(pad) + '.npy'
 
@@ -212,10 +215,10 @@ if __name__ == '__main__':
 
     # model_name = 'heston_1_step'
     # model_name = 'gaussian_jumps_1'
-    # model_name = 'variance_gamma_1'
+    model_name = 'variance_gamma_1'
     # model_name = 'cgmy_1'
     # model_name = 'cgmy_sv_1'
-    model_name = 'cgmy4_sv_1'
+    # model_name = 'cgmy4_sv_1'
     time_window = '1day'
 
     start = int(sys.argv[1])
